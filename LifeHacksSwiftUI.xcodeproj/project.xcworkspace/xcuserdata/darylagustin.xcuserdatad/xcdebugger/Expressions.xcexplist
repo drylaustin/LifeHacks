@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "static TestData.loadFile&lt;&#x3c4;_0_0&gt;(named:):TestData.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in variable initialization expression of static TestData.topTags:TestData.swift">
+      </ContextState>
+      <ContextState
+         contextName = "TestData.questions.unsafeMutableAddressor:TestData.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

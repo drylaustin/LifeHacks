@@ -1,0 +1,101 @@
+//
+//  TopUsersView.swift
+//  LifeHacksSwiftUI
+//
+//  Created by DARYL AGUSTIN on 11/2/21.
+//
+
+import SwiftUI
+
+
+struct TopUsersView: View {
+    @StateObject private var dataModel = DataModel()
+    var body: some View {
+        Content(users: dataModel.users, isLoading: dataModel.isLoading)
+            .environment(\.navigationMap, NavigationMap(destinationForUser: { ProfileView(user: $0) }))
+            .onAppear(perform: dataModel.loadUsers)
+    }
+}
+    
+fileprivate typealias Content = TopUsersView.Content
+    
+extension TopUsersView {
+    struct Content: View {
+        let users: [User]
+        var isLoading: Bool = false
+        
+        @ScaledMetric private var columnWidth: CGFloat = 200.0
+        @Environment(\.navigationMap) private var navigationMap
+        
+    var body: some View {
+        ScrollView {
+            LoadingIndicator(isLoading: isLoading)
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 24.0) {
+                ForEach(users) { user in
+                    NavigationLink(destination: navigationMap.destinationForUser?(user))
+                    {
+                    Cell(user: user)
+                    }
+                }
+            }
+            .padding(.top, 24.0)
+            .padding(.leading, 20.0)
+            .buttonStyle(PlainButtonStyle())
+        }
+        .navigationTitle("Users")
+    }
+}
+}
+
+    
+private extension Content{
+    var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: columnWidth))]
+    }
+}
+    
+//fileprivate typealias Cell = TopUsersView.Cell
+extension Content {
+    struct Cell: View {
+        let name: String
+        let reputation: Int
+        let avatar: UIImage
+        
+        @ScaledMetric private var avatarSize: CGFloat = 37.0
+        @ScaledMetric private var spacing: CGFloat = 8.0
+        
+        var body: some View {
+            HStack(spacing: spacing) {
+                RoundImage(image: avatar)
+                    .frame(width: avatarSize, height: avatarSize)
+                VStack(alignment: .leading, spacing: 4.0) {
+                    Text(name)
+                        .font(.subheadline)
+                        .bold()
+                    Text("\(reputation.formatted) reputation")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+}
+
+extension Content.Cell {
+    init(user: User) {
+        name = user.name
+        reputation = user.reputation
+        avatar = user.avatar ?? UIImage()
+    }
+}
+
+
+struct TopUsersView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            Content(users: TestData.users)
+        }
+        .fullScreenPreviews()
+        
+    }
+}
